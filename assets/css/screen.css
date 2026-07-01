@@ -25,15 +25,15 @@ img{
 @font-face {
   font-family: 'Neue Haas Grotesk Text Pro';
   src: url('fonts/NeueHaasGroteskTextPro-Medium.woff2') format('woff2');
-  font-weight: 500; /* Medium */
+  font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Neue Haas Grotesk Text Pro';
   src: url('fonts/NeueHaasGroteskTextPro-Bold.woff2') format('woff2');
-  font-weight: 700; /* Bold */
-  font-style: normal;
+  font-weight: 700;
+  font-style: bold;
 }
 
 * {
@@ -133,6 +133,14 @@ a {
   transition: filter 0.3s ease;
 }
 
+.grid-container {
+    margin-top: 40px !important;
+}
+
+.title-bar, header {
+    margin-bottom: 40px !important;
+}
+
 .grid-item:hover img {
   filter: grayscale(0%);
 }
@@ -158,4 +166,114 @@ a {
 
 .item-desc {
   color: #888888;
+}
+h1 {
+    margin-bottom: 100px;
+    font-family: 'NeueHaasGroteskTextPro-Bold', sans-serif; 
+    font-weight: 700; 
+    font-size: 32px; 
+    text-align:center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.katalog-grid div {
+}
+.katalog-grid div {
+    font-size: 20px !important;   
+    font-weight: bold !important; 
+    color: #00FF88 !important;    
+    line-height: 1.4 !important;
+}
+
+
+.katalog-grid div br + text,
+.katalog-grid div br + span,
+.katalog-grid div:contains("undefined"),
+.katalog-grid div {
+
+}
+
+.katalog-grid div p:nth-of-type(2),
+.katalog-grid div span:nth-of-type(2) {
+    display: none !important;
+}
+
+.katalog-grid {
+    margin-top: 40px;
+}
+.main-layout {
+    display: flex;
+    align-items: flex-start;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    gap: 50px;
+}
+
+.sidebar {
+    width: 25%;
+    position: sticky;
+    top: 60px; 
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-right: 20px;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 0px;
+}
+
+.sidebar .title {
+    font-size: 24px;          
+    font-weight: 800;         
+    line-height: 1.4;
+    text-transform: none;     
+    letter-spacing: 0em;      
+    margin-bottom: 40px;      
+    text-align: left;
+    white-space: nowrap;      
+}
+#country-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-item {
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 6px 0;
+    color: #666666; 
+    transition: color 0.15s ease;
+}
+
+
+.menu-item:hover, 
+.menu-item.active {
+    color: #00FF88; 
+    font-weight: bold;
+}
+
+.content-area {
+    width: 75%;
+}
+
+.katalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-top: 10px;
+}
+
+.card-author {
+    display: none; 
 }
