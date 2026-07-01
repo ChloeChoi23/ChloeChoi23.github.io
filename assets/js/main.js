@@ -1,118 +1,100 @@
-// Store all loaded catalogue data globally
 let allData = [];
 
-// Load the JSON file from the assets/data folder
+const categories = [
+    "ALL", "ISO", "RETRO", "UNITED_STATES_OF_AMERICA", "AUSTRALIA", "BRAZIL", 
+    "CANADA", "CHILE", "EU", "GREECE", "HONGKONG", "INDIA", "IRAN", "ISRAEAL", 
+    "JAPAN", "KOREA", "MALAYSIA", "RUSSIA", "SAUDI_ARABIA", "THAILAND", 
+    "TURKEY", "UNITED_KINGDOM", "VIETNAM", "AIRBUS", "MARINE", "TUNEL"
+];
+
 fetch('assets/data/katalog.json')
     .then(response => {
-
-        // Log the HTTP response so we can check if the file was found
-        console.log('JSON response:', response);
-
-        // If the file was not loaded successfully, throw an error
-        if (!response.ok) {
-            throw new Error('JSON file could not be loaded');
-        }
-
-        // Convert the JSON response into JavaScript data
+        if (!response.ok) throw new Error('JSON file could not be loaded');
         return response.json();
     })
     .then(data => {
-
-        // Log the loaded data to check if it is an array
-        console.log('Loaded JSON data:', data);
-
-        // Save the loaded data in a global variable
         allData = data;
 
-        // Render the catalogue cards
         renderKatalog(allData);
+        
+        createFilterMenu();
     })
     .catch(error => {
-
-        // Log the error in the browser console
         console.error('Error loading JSON:', error);
-
-        // Show an error message on the page
-        document.getElementById('katalog').innerHTML =
-            '<div class="loading">Error loading data</div>';
+        const katalog = document.getElementById('katalog');
+        if (katalog) katalog.innerHTML = '<div class="loading">Error loading data</div>';
     });
 
+function createFilterMenu() {
+    const menuContainer = document.getElementById('country-menu');
+    if (!menuContainer) return;
 
-// Render catalogue items into the HTML page
+    let menuHtml = '';
+    categories.forEach(category => {
+        const isActive = category === "ALL" ? "active" : "";
+        const displayName = category.replace(/_/g, ' ');
+        menuHtml += `<li class="menu-item ${isActive}" data-category="${category}">${displayName}</li>`;
+    });
+    menuContainer.innerHTML = menuHtml;
+
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            document.querySelector('.menu-item.active')?.classList.remove('active');
+            e.target.classList.add('active');
+
+            const selectedCategory = e.target.getAttribute('data-category');
+
+            if (selectedCategory === 'ALL') {
+                renderKatalog(allData);
+            } else {
+                const filteredData = allData.filter(data => {
+                    const titleMatch = data.Titel && data.Titel.toUpperCase().includes(selectedCategory);
+                    const landMatch = data.Land && data.Land.toUpperCase().includes(selectedCategory);
+                    return titleMatch || landMatch;
+                });
+                renderKatalog(filteredData);
+            }
+        });
+    });
+}
+
 function renderKatalog(items) {
-
-    // Get the catalogue container from the HTML document
     const katalog = document.getElementById('katalog');
+    if (!katalog) return;
 
-    // Check if the catalogue container exists
-    console.log('Catalogue container:', katalog);
-
-    // If the element does not exist, stop the function
-    if (!katalog) {
-        console.error('Element with id="katalog" was not found');
+    if (!Array.isArray(items) || items.length === 0) {
+        katalog.innerHTML = '<div style="color: #666; padding: 20px 0;">No items found.</div>';
         return;
     }
 
-    // Check if the data is really an array
-    if (!Array.isArray(items)) {
-        console.error('Expected an array, but got:', items);
-        return;
-    }
-
-    // Log how many items will be rendered
-    console.log('Number of catalogue items:', items.length);
-
-    // This variable will collect all generated HTML
     let html = '';
 
-    // Loop through every item in the JSON array
     for (let i = 0; i < items.length; i++) {
-
-        // Get the current item from the array
         const item = items[i];
-
-        // Log the current item for debugging
-        console.log('Rendering item:', i, item);
-
-        // Prepare the author text
-        let authorText = item.Author;
-
-        // Prepare an additional CSS class for unknown authors
+        let authorText = item.Author || '';
         let authorClass = '';
 
-        // If the author field contains "-", show a nicer text instead
-        if (item.Author === '-') {
-            authorText = 'Autor unbekannt';
+        if (!item.Author || item.Author === '-') {
+            authorText = '';
             authorClass = 'unknown';
         }
 
-        // Add one card to the HTML string
         html += `
             <div class="card">
-
                 <div class="card-image">
-                    <img src="${item['@image']}" alt="${item.Titel}">
+                    <img src="${item['@image']}" alt="${item.Titel || ''}">
                 </div>
-
                 <div class="card-content">
-
                     <div class="card-title">
-                        ${item.Titel}
+                        ${item.Titel || ''}
                     </div>
-
                     <div class="card-author ${authorClass}">
                         ${authorText}
                     </div>
-
                 </div>
-
             </div>
         `;
     }
-
-    // Log the final generated HTML
-    console.log('Generated HTML:', html);
-
-    // Insert the generated HTML into the catalogue container
     katalog.innerHTML = html;
 }
